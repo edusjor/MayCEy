@@ -1,4 +1,4 @@
-saludos(['hola', 'buenas', 'Buenos días','Buenas tardes'], "Hola ¿en qué lo puedo ayudar?").
+saludos(['hola', 'buenas', 'Buenos dÃ­as','Buenas tardes'], "Hola Â¿en quÃ© lo puedo ayudar?").
 
 emergencias(['Mayday, mayday', 'mayday, mayday'], "Buenas, por favor indique su emergencia").
 
@@ -9,9 +9,9 @@ despedidas(['Adios','Hasta luego','Cambio y fuera'],"Hasta luego").
 despedidas(['adios','hasta luego','cambio y fuera'],"Hasta luego").
 
 emergeciasSolicitud(["Perdida de motor", "Llamar a Bomberos"],
-      ["Parto en Medio Vuelo", "Llamar a médico"],
-      ["Paro Cardiaco de Pasajero", "Llamar a médico"],
-      ["Secuestro", "Llamar a la OIJ y fuerza pública"]).
+      ["Parto en Medio Vuelo", "Llamar a mÃ©dico"],
+      ["Paro Cardiaco de Pasajero", "Llamar a mÃ©dico"],
+      ["Secuestro", "Llamar a la OIJ y fuerza pÃºblica"]).
 
 tipoemergencia(7500,"se desplegaran los bomberos").
 
@@ -36,7 +36,7 @@ verbo([come|S],S).
 % Hecho principal, se en carga de escribir el texto en la terminal,
 % Toma el texto que el usuario escribe, procesarlo y responderle
 % En la ListaChat se guarda un cierto historial de lo que la
-% conversación con el usuario ha sido para que con cada mensaje que
+% conversaciÃ³n con el usuario ha sido para que con cada mensaje que
 % envia el usuario, el bot pueda recordar que es lo que han estado
 % hablando
 chatMayCEy(ListaChat):-
@@ -90,6 +90,6 @@ responder(Texto,Resp,ElemLChat):-%despedida cambio y fuera, responde un mensaje 
 
 responder(Texto,Resp,ElemLChat):-%si entra aqui es porque no hubo coincidencia
         Resp="Lo siento, no entiendo tu mensaje",
-        ElemLChat='',
-        Texto=" ". %solo para quitar el warming
+        ElemLChat=" ",
+        Texto=Texto. %solo para quitar el warming
 
