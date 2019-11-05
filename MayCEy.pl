@@ -1,12 +1,14 @@
-saludos(['hola', 'buenas', 'Buenos días','Buenas tardes'], "Hola ¿en qué lo puedo ayudar?").
+saludos(['hola', 'buenas', 'Buenas noches','Buenas tardes'], 'Hola �en que lo puedo ayudar?').
 
-emergencias(['Mayday, mayday', 'mayday, mayday'], "Buenas, por favor indique su emergencia").
+emergencias(['Mayday, mayday', 'mayday, mayday'], 'Buenas, por favor indique su emergencia').
 
-agradecimientos(['Gracias', 'Muchas gracias'], "Con mucho gusto").
-agradecimientos(['gracias', 'muchas gracias'], "Con mucho gusto").
+agradecimientos(['Gracias', 'Muchas gracias'], 'Con mucho gusto').
+agradecimientos(['gracias', 'muchas gracias'], 'Con mucho gusto').
 
-despedidas(['Adios','Hasta luego','Cambio y fuera'],"Hasta luego").
-despedidas(['adios','hasta luego','cambio y fuera'],"Hasta luego").
+despedidas(['Adios','Hasta luego','Cambio y fuera'],'Hasta luego').
+despedidas(['adios','hasta luego','cambio y fuera'],'Hasta luego').
+
+solicitud(['aterrizar','despegar'],'Por favor identifiquese').
 
 emergeciasSolicitud(["Perdida de motor", "Llamar a Bomberos"],
       ["Parto en Medio Vuelo", "Llamar a médico"],
@@ -76,6 +78,12 @@ responder(Texto,Resp,ElemLChat):-%agradecimiento
     miembro(Texto,ListaDeAgradecimientos),
     ElemLChat='agradecimiento'.
 
+responder(Texto,Resp,ElemLChat):-%aterrizar
+    identificar(Texto,'aterrizar'),
+    solicitud(ListaDeSolicitud,Resp),
+    miembro('aterrizar',ListaDeSolicitud),
+    ElemLChat='aterrizar'.
+
 responder(Texto,Resp,ElemLChat):-%despedida
     despedidas(ListaDeDespedidas,Resp),
     miembro(Texto,ListaDeDespedidas),
@@ -89,7 +97,12 @@ responder(Texto,Resp,ElemLChat):-%despedida cambio y fuera, responde un mensaje 
     ElemLChat='fin chat'.
 
 responder(Texto,Resp,ElemLChat):-%si entra aqui es porque no hubo coincidencia
-        Resp="Lo siento, no entiendo tu mensaje",
-        ElemLChat=" ",
+        Resp='Lo siento, no entiendo tu mensaje',
+        ElemLChat=' ',
         Texto=Texto. %solo para quitar el warming
 
+identificar(Text,Palabra):-
+	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
+	%mostrar(ListaPalabras),
+	miembro(Palabra,ListaPalabras),
+	write('Palabra indetificada').
