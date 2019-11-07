@@ -1,0 +1,17 @@
+avionesPequeños(['Cessna', 'Beechcraft', 'Embraer Phenom']).
+avionesMedianos(['Boing 717', 'Embraer 190', 'AirBus A220']).
+avionesGrandes(['Boing 747', 'AirBus A340', 'AirBus A380']).
+
+pista('P1', 1, '').
+pista('P2-1', 2, 'Este a Oeste').
+pista('P2-2', 2, 'Oeste a Este').
+pista('P3', 3, '').
+
+
+
+
+
+
+
+
+

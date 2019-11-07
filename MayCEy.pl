@@ -183,5 +183,3 @@ responder(Texto,Resp,ElemLChat):-%si entra aqui es porque no hubo coincidencia
         Resp='Lo siento, no entiendo tu mensaje',
         ElemLChat=' ',
         Texto=Texto. %solo para quitar el warming
-
-
