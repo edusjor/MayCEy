@@ -1,6 +1,8 @@
 saludos(['hola','Hola','Buenas', 'buenas', 'Buenas noches','Buenas tardes']).
 
-despedidas(['Adios','Hasta luego','Cambio y fuera','adios','hasta luego','cambio y fuera']).
+despedidas(['Adios','Hasta luego','adios','hasta luego','Muchas gracias, adios']).
+
+despedidaCambioYFuera(['Cambio y fuera','cambio y fuera']).
 
 emergencias(['Mayday, mayday', 'mayday, mayday']).
 
@@ -8,13 +10,11 @@ avionesPequenos(['cessna', 'beechcraft', 'embraerPhenom']).
 avionesMedianos(['boing717', 'embraer190', 'airBusA220']).
 avionesGrandes(['boing747', 'airBusA340', 'airbusA380']).
 
-emergeciasSolicitud(['Perdida de motor', 'Llamar a Bomberos'],
-      ['Parto en Medio Vuelo', 'Llamar a medico'],
-      ['Paro Cardiaco de Pasajero', 'Llamar a medico'],
-      ['Secuestro', 'Llamar a la OIJ y fuerza publica'],
-      ['7500','se desplegaran los bomberos y el cuerpo policial']).
-
-atencionEmergencias([]).
+emergenciasSolicitud([['perdida de motor', 'Se desplazaran los Bomberos'],
+      ['parto en Medio Vuelo', 'Se desplazara al medico'],
+      ['paro Cardiaco de Pasajero', 'Se enviara un medico'],
+      ['secuestro', 'El OIJ y fuerza publica va en camino a la pista'],
+      ['7500','se desplegaran los bomberos y el cuerpo policial']]).
 
 pista('P1', 1, '').
 pista('P2-1', 2, 'Este a Oeste').
@@ -39,22 +39,18 @@ chatMayCEy(ListaHistorialChat,MsjEsperadoTemp):-
         writeln(' '),
         write('-MayCEy: '),
 
+	%%%%%%%%%%%%%%%%%%% Se identifica si el texto ingresado esta dentro de la gramatica %%%%%%%%%%%%%%%%%%%
 	findall(TipoMsjRecibido,tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),ListaCompleta),
 	findall(MsjDeMCy,tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),ListaMsMayCey),
 
-	%verificarDato(ListaHistorialChat,ListaCompleta,ListaHistorialChatNew),
-
 	append(ListaHistorialChat,ListaCompleta,ListaHistorialChatNew),
 
+	%%%%%%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%%%%%%%%%
 	pregunta(ListaMsMayCey),
+	pregunta=='Cambio Y Fuera'->!;
 	writeln(' '),
 
-	/*write('Lista del historial del chat: '),
-	writeln(ListaHistorialChatNew),
-	writeln(' '),*/
-
         chatMayCEy(ListaHistorialChatNew,MsjEsperadoTemp).
-
 
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
@@ -64,12 +60,32 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
 	MsjDeMCy='Hola ¿en que lo puedo ayudar?',
         TipoMsjRecibido='saludo'.
 
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
+        despedidas(ListaDespedidas),
+        identificar(MsjDeUsuario,ListaDespedidas),
+	%writeln('Saludo identificado'),
+	MsjDeMCy='Hasta luego',
+        TipoMsjRecibido='despedida'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%cambioYfuera
+        despedidaCambioYFuera(ListaCamYFue),
+        identificar(MsjDeUsuario,ListaCamYFue),
+	%writeln('Saludo identificado'),
+	MsjDeMCy='Cambio Y Fuera',
+        TipoMsjRecibido='CambioYFuera'.
+
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergencia
         emergencias(ListaEmergencias),
         identificar(MsjDeUsuario,ListaEmergencias),
 	%writeln('Emergencia identificada'),
-	MsjDeMCy='Por favor indique su emergencia',
+	MsjDeMCy='Por favor indique su emergencia, e identifiquese',
         TipoMsjRecibido='emergencia'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergenciaRespuesta
+	identificarEmergencias(MsjDeUsuario,Emergencia),
+	%writeln('Emergencia identificada'),
+	MsjDeMCy=Emergencia,
+        TipoMsjRecibido='PrimerosAuxEnviados'.
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %aterrizar
 	identificar(MsjDeUsuario,['aterrizar']),
@@ -92,19 +108,6 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
         MsjDeMCy='Gracias, ¿Qué tipo de Aeronave es?'.
 	/*TipoMsjRecibido='Error',
         MsjDeMCy='Error, por favor identifiquese de nuevo'.*/
-
-/*tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
-        identificar(MsjDeUsuario,['matricula','Matricula']),
-	%writeln('Matricula identificada'),
-	TipoMsjRecibido='Matricula',
-        MsjDeMCy='Gracias, ¿Qué tipo de Aeronave es?'.
-
-tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
-	identificar(MsjDeUsuario,['vuelo','Vuelo']),
-	%writeln('Vuelo identificado'),
-        TipoMsjRecibido='Vuelo',
-        MsjDeMCy='Gracias, ¿Qué tipo de Aeronave es?'.
-*/
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones P
 	avionesPequenos(X),
@@ -160,6 +163,21 @@ verificarVelocidad(Vel):-
 identificar(Text,Lista):-
 	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
 	miembroL(Lista,ListaPalabras).
+
+
+%%%%%%%%%%%%%%%%%%%%Identificacion de Emergencias%%%%%%%%%%%%%%%%%%%%
+identificarEmergencias(Text,Emergencia):-
+	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
+	emergenciasSolicitud(L),
+	auxEmergencias(L,ListaPalabras,Emergencia).
+
+auxEmergencias([[X|[Y|_]]|R],ListaPalabras,Emergencia):-
+	miembro(X,ListaPalabras),
+	Emergencia=Y,!;
+	auxEmergencias(R,ListaPalabras,Emergencia).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 miembroL([X|R],L2):-
 	miembro(X,L2);
