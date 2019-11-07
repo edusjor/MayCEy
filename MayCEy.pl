@@ -20,41 +20,62 @@ tipoemergencia(7500,"se desplegaran los bomberos").
 
 
 
-oracion(S0,S):- sintagma_nominal(S0,S1),
-sintagma_verbal(S1,S).
-sintagma_nominal(S0,S):- determinante(S0,S1),
-nombre(S1,S).
-sintagma_verbal(S0,S):- verbo(S0,S).
-sintagma_verbal(S0,S):- verbo(S0,S1),sintagma_nominal(S1,S).
-determinante([el|S],S).
-determinante([la|S],S).
-nombre([hombre|S],S).
-nombre([manzana|S],S).
-verbo([come|S],S).
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Hecho principal, se en carga de escribir el texto en la terminal,
-% Toma el texto que el usuario escribe, procesarlo y responderle
-% En la ListaChat se guarda un cierto historial de lo que la
-% conversación con el usuario ha sido para que con cada mensaje que
-% envia el usuario, el bot pueda recordar que es lo que han estado
-% hablando
-chatMayCEy(ListaChat):-
+% Hecho principal, se encarga de escribir el texto en la terminal,
+% Toma el msj que el usuario escribe, procesa y responde
+% En la ListaHistorialChat se guarda un cierto historial del
+% tipo de msjs que ha recibido del usuario
+% MsjEsperadoTemp es lo que mayCEy esta esperando recibir en
+% cada respuesta del usuario, para primer mensaje habra un '0'
+chatMayCEy:-
+        chatMayCEy([],'0').
+chatMayCEy(ListaHistorialChat,MsjEsperadoTemp):-
         write('-Usuario: '),
-	read(Texto),
-
+	read(MsjDeUsuario),
         writeln(' '),
         write('-MayCEy: '),
 
-        responder(Texto,Resp,ElemLChat), %procesa el texto y recibe la respuesta para el usuario
-        writeln(Resp),
+        procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp), %procesa el texto y recibe la respuesta para el usuario
+        writeln(MsjDeMCy),
         writeln(' '),
 
-        append(ListaChat, [ElemLChat], ListaChatResult), %se agrega a la lista los detalles para
-                                                         %recordar de lo que va el chat(saludo,emergencia,id,despedida)
-        chatMayCEy(ListaChatResult).
+        append(ListaHistorialChat, [TipoMsjRecibido],ListaHistorialChatNew),
+
+        chatMayCEy(ListaHistorialChatNew,MsjEsperadoTemp).
+
+
+%si es un primer mensaje de saludo
+procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp):-
+        MsjEsperadoTemp=='0', %el chat con el usuario apenas va a empezar
+        tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
+        ListaHistorialChat=ListaHistorialChat.
+
+%si es un primer mensaje de emergencia
+procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp):-
+        MsjEsperadoTemp=='0', %el chat con el usuario apenas va a empezar
+        tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
+        TipoMsjRecibido=='emergencia',
+        ListaHistorialChat=ListaHistorialChat.
+
+% procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp):-
+  %      MsjEsperadoTemp
+
+
+% si es usa solicitud de identifiacion
+procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp):-
+        MsjEsperadoTemp=='identificacion',
+        tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
+        ListaHistorialChat=ListaHistorialChat.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -63,15 +84,30 @@ chatMayCEy(ListaChat):-
 miembro(X,[X|_]).
 miembro(X,[_|R]):-miembro(X,R).
 
-responder(Texto,Resp,ElemLChat):-%saludo
-        saludos(ListaSaludos,Resp),
-        miembro(Texto,ListaSaludos),
-        ElemLChat='saludo'. %busca si el texto es un saludo
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
+        saludos(ListaSaludos,MsjDeMCy),
+        miembro(MsjDeUsuario,ListaSaludos),
+        TipoMsjRecibido='saludo'. %busca si el texto es un saludo
 
-responder(Texto,Resp,ElemLChat):-%emergencia
-    emergencias(ListaDeEmergencias,Resp),
-    miembro(Texto,ListaDeEmergencias),
-    ElemLChat='emergencia'.
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergencia
+        saludos(ListaEmergencias,MsjDeMCy),
+        miembro(MsjDeUsuario,ListaEmergencias),
+        TipoMsjRecibido='emergencia'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
+
+        identificar(MsjDeUsuario,'Vuelo'),
+        identificar(MsjDeUsuario,'Aerolinea'),
+        identificar(MsjDeUsuario,'Matricula'),
+        TipoMsjRecibido='identificacion',
+        MsjDeMCy='Gracias!.'.
+
+
+
+
+
+
+
 
 responder(Texto,Resp,ElemLChat):-%agradecimiento
     agradecimientos(ListaDeAgradecimientos,Resp),
@@ -104,5 +140,5 @@ responder(Texto,Resp,ElemLChat):-%si entra aqui es porque no hubo coincidencia
 identificar(Text,Palabra):-
 	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
 	%mostrar(ListaPalabras),
-	miembro(Palabra,ListaPalabras),
-	write('Palabra indetificada').
+	miembro(Palabra,ListaPalabras).
+	%write('Palabra indetificada').
