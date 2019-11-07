@@ -1,19 +1,22 @@
-saludos(['hola', 'buenas', 'Buenas noches','Buenas tardes'], 'Hola ¿en que lo puedo ayudar?').
+saludos(['hola', 'buenas', 'Buenas noches','Buenas tardes']).
 
-emergencias(['Mayday, mayday', 'mayday, mayday'], 'Buenas, por favor indique su emergencia').
-
-agradecimientos(['Gracias', 'Muchas gracias'], 'Con mucho gusto').
-agradecimientos(['gracias', 'muchas gracias'], 'Con mucho gusto').
+agradecimientos(['Gracias','Muchas gracias','gracias','muchas gracias'], 'Con mucho gusto').
 
 despedidas(['Adios','Hasta luego','Cambio y fuera'],'Hasta luego').
 despedidas(['adios','hasta luego','cambio y fuera'],'Hasta luego').
 
 solicitud(['aterrizar','despegar'],'Por favor identifiquese').
 
-emergeciasSolicitud(["Perdida de motor", "Llamar a Bomberos"],
-      ["Parto en Medio Vuelo", "Llamar a mÃ©dico"],
-      ["Paro Cardiaco de Pasajero", "Llamar a mÃ©dico"],
-      ["Secuestro", "Llamar a la OIJ y fuerza pÃºblica"]).
+emergencias(['Mayday, mayday', 'mayday, mayday']).
+
+avionesPequenos(['cessna', 'beechcraft', 'embraerPhenom']).
+avionesMedianos(['boing717', 'embraer190', 'airBusA220']).
+avionesGrandes(['boing747', 'airBusA340', 'airbusA380']).
+
+emergeciasSolicitud(['Perdida de motor', 'Llamar a Bomberos'],
+      ['Parto en Medio Vuelo', 'Llamar a medico'],
+      ['Paro Cardiaco de Pasajero', 'Llamar a medico'],
+      ['Secuestro', 'Llamar a la OIJ y fuerza publica']).
 
 tipoemergencia(7500,"se desplegaran los bomberos").
 
@@ -34,18 +37,23 @@ chatMayCEy(ListaHistorialChat,MsjEsperadoTemp):-
         write('-Usuario: '),
 	read(MsjDeUsuario),
         writeln(' '),
-        write('-MayCEy: '),
+        writeln('-MayCEy: '),
 
-        procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp), %procesa el texto y recibe la respuesta para el usuario
+	findall(TipoMsjRecibido,tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),ListaCompleta),
+	tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
+
         writeln(MsjDeMCy),
         writeln(' '),
 
-        append(ListaHistorialChat, [TipoMsjRecibido],ListaHistorialChatNew),
+        append(ListaHistorialChat,ListaCompleta,ListaHistorialChatNew),
+
+	write('Lista del historial del chat: '),
+	writeln(ListaHistorialChatNew),
 
         chatMayCEy(ListaHistorialChatNew,MsjEsperadoTemp).
 
 
-%si es un primer mensaje de saludo
+/*%si es un primer mensaje de saludo
 procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEsperadoTemp):-
         MsjEsperadoTemp=='0', %el chat con el usuario apenas va a empezar
         tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
@@ -68,45 +76,84 @@ procesarMensaje(MsjDeUsuario,TipoMsjRecibido,MsjDeMCy,ListaHistorialChat,MsjEspe
         tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido),
         ListaHistorialChat=ListaHistorialChat.
 
-
-
-
-
-
-
-
-
-
-
-
-
-%para verificar si X elemento es miembro de una lista
-miembro(X,[X|_]).
-miembro(X,[_|R]):-miembro(X,R).
+*/
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
-        saludos(ListaSaludos,MsjDeMCy),
-        miembro(MsjDeUsuario,ListaSaludos),
+        saludos(ListaSaludos),
+        identificar(MsjDeUsuario,ListaSaludos),
+	writeln('Saludo identificado'),
+	MsjDeMCy='Hola ¿en que lo puedo ayudar?',
         TipoMsjRecibido='saludo'. %busca si el texto es un saludo
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergencia
-        saludos(ListaEmergencias,MsjDeMCy),
-        miembro(MsjDeUsuario,ListaEmergencias),
+        emergencias(ListaEmergencias),
+        identificar(MsjDeUsuario,ListaEmergencias),
+	writeln('Emergencia identificada'),
+	MsjDeMCy='Por favor indique su emergencia',
         TipoMsjRecibido='emergencia'.
 
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %aterrizar
+	identificar(MsjDeUsuario,['aterrizar']),
+	writeln('Aterrizaje identificado'),
+	MsjDeMCy= 'aterrizar asignado',
+        TipoMsjRecibido='aterrizar'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %despegar
+	identificar(MsjDeUsuario,['despegar']),
+	writeln('despegue identificado'),
+	MsjDeMCy= 'despegue asignado',
+        TipoMsjRecibido='despegar'.
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
+	identificar(MsjDeUsuario,['aerolinea','Aerolinea']),
+	writeln('Aerolinea identificada'),
+	TipoMsjRecibido='identificacion de areolinea realizada',
+        MsjDeMCy='Aerolinea identificada!.'.
 
-        identificar(MsjDeUsuario,'Vuelo'),
-        identificar(MsjDeUsuario,'Aerolinea'),
-        identificar(MsjDeUsuario,'Matricula'),
-        TipoMsjRecibido='identificacion',
-        MsjDeMCy='Gracias!.'.
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
+        identificar(MsjDeUsuario,['matricula','Matricula']),
+	writeln('Matricula identificada'),
+	TipoMsjRecibido='identificacion de matricula realizada',
+        MsjDeMCy='Matricula identificada!.'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
+	identificar(MsjDeUsuario,['vuelo','Vuelo']),
+	writeln('Vuelo identificado'),
+        TipoMsjRecibido='identificacion de vuelo realizado',
+        MsjDeMCy='Vuelo identificado!.'.
 
 
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones P
+	avionesPequenos(X),
+        identificar(MsjDeUsuario,X),
+	writeln('identificacion de Avion Pequeño Realizada'),
+        MsjDeMCy='identificacion de Avion Pequeño Realizada',
+        TipoMsjRecibido='avion pequeño identidicado!.'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones M
+	avionesMedianos(Y),
+        identificar(MsjDeUsuario,Y),
+	writeln('identificacion de Avion Mediano Realizada'),
+        MsjDeMCy='identificacion de Avion Mediano Realizada',
+        TipoMsjRecibido='avion mediano identidicado!.'.
+
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones G
+	avionesGrandes(Z),
+        identificar(MsjDeUsuario,Z),
+	writeln('identificacion de Avion Grande Realizada'),
+        MsjDeMCy='identificacion de Avion Grande Realizada',
+        TipoMsjRecibido='avion grande identidicado!.'.
 
 
+identificar(Text,Lista):-
+	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
+	miembroL(Lista,ListaPalabras).
 
+miembroL([X|R],L2):-
+	miembro(X,L2);
+	miembroL(R,L2).
 
+miembro(X,[X|_]):-!.
+miembro(X,[_|R]):-miembro(X,R).
 
 
 responder(Texto,Resp,ElemLChat):-%agradecimiento
@@ -137,8 +184,4 @@ responder(Texto,Resp,ElemLChat):-%si entra aqui es porque no hubo coincidencia
         ElemLChat=' ',
         Texto=Texto. %solo para quitar el warming
 
-identificar(Text,Palabra):-
-	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
-	%mostrar(ListaPalabras),
-	miembro(Palabra,ListaPalabras).
-	%write('Palabra indetificada').
+
