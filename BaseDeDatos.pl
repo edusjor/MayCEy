@@ -25,17 +25,32 @@ emergencias(['Perdida de motor', 'Llamar a Bomberos'],
 
 verificarVelocidad(Vel):-
     Vel >= 240,
-    write('Por favor disminuya su velocidad para lograr aterrizar');
+    write('Por favor disminuya su velocidad para lograr aterrizar'), !;
     write('Puede aterrizar sin problemas').
 
-asignarPista(Avion, Vel, Dir):-
-    verificarVelocidad(Vel),
-    miembro(Avion, avionesPequeños),
-    write('P1 asignada'),
-    miembro(Avion, avionesMedianos),
+miembro(X,[X|_]):-!.
+miembro(X,[_|R]):-miembro(X,R).
+
+asignarPista(Vel):-
+    verificarVelocidad(Vel).
+
+asignarPista(Avion, Dir):-
+    (avionesPequeños(X); avionesMedianos(X); avionesGrandes(X)),
+    miembro(Avion, X),
+    Dir == '',
+    write('P3 asignada'), !.
+
+asignarPista(Avion, Dir):-
+    (avionesPequeños(X); avionesMedianos(X)),
+    miembro(Avion, X),
     Dir == 'Este a Oeste',
-    write('P2-1 asignada'),
+    write('P2-1 asignada'), !,
     Dir == 'Oeste a Este',
-    write('P2-2 asignada');
-    write('P3 asignada').
+    write('P2-2 asignada'), !.
+
+asignarPista(Avion, Dir):-
+    avionesPequeños(X),
+    miembro(Avion, X),
+    Dir == '',
+    write('P1 asignada'), !.
 
