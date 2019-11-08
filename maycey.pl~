@@ -10,16 +10,11 @@ avionesPequenos(['cessna', 'beechcraft', 'embraerPhenom']).
 avionesMedianos(['boing717', 'embraer190', 'airBusA220']).
 avionesGrandes(['boing747', 'airBusA340', 'airbusA380']).
 
-emergenciasSolicitud(['perdida de motor', 'Se desplazaran los Bomberos'],
+emergenciasSolicitud([['perdida de motor', 'Se desplazaran los Bomberos'],
       ['parto en Medio Vuelo', 'Se desplazara al medico'],
       ['paro Cardiaco de Pasajero', 'Se enviara un medico'],
       ['secuestro', 'El OIJ y fuerza publica va en camino a la pista'],
-      ['7500','se desplegaran los bomberos y el cuerpo policial']).
-
-pista('P1', 1, '').
-pista('P2-1', 2, 'Este a Oeste').
-pista('P2-2', 2, 'Oeste a Este').
-pista('P3', 3, '').
+      ['7500','se desplegaran los bomberos y el cuerpo policial']]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,13 +25,13 @@ pista('P3', 3, '').
 % MsjEsperadoTemp es lo que mayCEy esta esperando recibir en
 % cada respuesta del usuario, para primer mensaje habra un '0'
 chatMayCEy:-
-        chatMayCEy([],'0').
-chatMayCEy(ListaHistorialChat,MsjEsperadoTemp):-
+        chatMayCEy([]).
+chatMayCEy(ListaHistorialChat):-
         writeln(' '),
 	write('-Usuario: '),
 	read(MsjDeUsuario),
 
-        writeln(' '),
+	writeln(''),
         write('-MayCEy: '),
 
 	%%%%%%%%%%%%%%%%%%% Se identifica si el texto ingresado esta dentro de la gramatica %%%%%%%%%%%%%%%%%%%
@@ -47,10 +42,9 @@ chatMayCEy(ListaHistorialChat,MsjEsperadoTemp):-
 
 	%%%%%%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%%%%%%%%%
 	pregunta(ListaMsMayCey),
-%	pregunta=='Cambio Y Fuera'->!;
-	writeln(' '),
+	writeln(''),
 
-        chatMayCEy(ListaHistorialChatNew,MsjEsperadoTemp).
+        chatMayCEy(ListaHistorialChatNew).
 
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
@@ -67,7 +61,7 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
 	MsjDeMCy='Hasta luego',
         TipoMsjRecibido='despedida'.
 
-tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
+tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%cambioYfuera
         despedidaCambioYFuera(ListaCamYFue),
         identificar(MsjDeUsuario,ListaCamYFue),
 	%writeln('Saludo identificado'),
@@ -111,23 +105,47 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones P
 	avionesPequenos(X),
-        identificar(MsjDeUsuario,X),
-	%writeln('identificacion de Avion Pequeño Realizada'),
-        MsjDeMCy='Avion Pequeño Identificado',
+        identificar(MsjDeUsuario,X)->
+	%%%%%%%%%%%%%%%% Se solicita los datos de velocidad y direccion %%%%%%%%%%%%%%%%%%%%%%%%
+	writeln('ingrese su velocidad en km/h'),
+	writeln(''),
+	write('-Usuario: '), read(Velocidad),
+	writeln(''),
+	writeln('-MayCey: ingrese su direccion'),
+	writeln(''),
+	write('-Usuario: '), read(Direccion),
+	asignarPista('Avion Pequeno',Velocidad,Direccion,PistaAsignada),
+        MsjDeMCy=PistaAsignada,
         TipoMsjRecibido='avionPequeño'.
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones M
 	avionesMedianos(Y),
-        identificar(MsjDeUsuario,Y),
-	%writeln('identificacion de Avion Mediano Realizada'),
-        MsjDeMCy='Avion Mediano Identificado',
+        identificar(MsjDeUsuario,Y)->
+        %%%%%%%%%%%%%%%% Se solicita los datos de velocidad y direccion %%%%%%%%%%%%%%%%%%%%%%%%
+	writeln('ingrese su velocidad en km/h'),
+	writeln(''),
+	write('-Usuario: '), read(Velocidad),
+	writeln(''),
+	writeln('-MayCey: ingrese su direccion'),
+	writeln(''),
+	write('-Usuario: '), read(Direccion),
+	asignarPista('Avion Mediano',Velocidad,Direccion,PistaAsignada),
+        MsjDeMCy=PistaAsignada,
         TipoMsjRecibido='avionMediano'.
 
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones G
 	avionesGrandes(Z),
-        identificar(MsjDeUsuario,Z),
-	%writeln('identificacion de Avion Grande Realizada'),
-        MsjDeMCy='Avion Grande Identificado',
+        identificar(MsjDeUsuario,Z)->
+	%%%%%%%%%%%%%%%% Se solicita los datos de velocidad y direccion %%%%%%%%%%%%%%%%%%%%%%%%
+	writeln('ingrese su velocidad en km/h'),
+	writeln(''),
+	write('-Usuario: '), read(Velocidad),
+	writeln(''),
+	writeln('-MayCey: ingrese su direccion'),
+	writeln(''),
+	write('-Usuario: '), read(Direccion),
+	asignarPista('Avion Grande',Velocidad,Direccion,PistaAsignada),
+        MsjDeMCy=PistaAsignada,
         TipoMsjRecibido='avionGrande'.
 
 
@@ -140,22 +158,13 @@ pregunta([C|Lista]):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%Pistas%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-asignarPista(Avion, Vel, Dir):-
-    verificarVelocidad(Vel),
-    miembro(Avion, avionesPequeños),
-    write('P1 asignada'),
-    miembro(Avion, avionesMedianos),
-    Dir == 'Este a Oeste',
-    write('P2-1 asignada'),
-    Dir == 'Oeste a Este',
-    write('P2-2 asignada');
-    write('P3 asignada').
-
-verificarVelocidad(Vel):-
-    Vel >= 240,
-    write('Por favor disminuya su velocidad para lograr aterrizar');
-    write('Puede aterrizar sin problemas').
+asignarPista(Avion,Velocidad,Direccion,Pista):-
+    Velocidad >= 240,writeln('Por favor disminuya su velocidad para lograr aterrizar a 240 km/h, aproximadamente'),
+    /*writeln('Mantenga su velocidad sin sobrepasar los 240 km/h para aterrizar sin problemas'),!;*/
+    Avion=='Avion Pequeno'->Pista='P1 asignada',
+    Avion=='Avion Grande'->Pista='P3 asignada',
+    Avion=='Avion Mediano'->Direccion == 'Este a Oeste',Pista='P2-1 asignada',
+    Avion=='Avion Mediano'->Direccion == 'Oeste a Este',Pista='P2-2 asignada'.
 
 
 %%%%%%%%%%%%%%%%%%%%%Identificacion de Palabras%%%%%%%%%%%%%%%%%%%%%%%
@@ -185,7 +194,3 @@ miembroL([X|R],L2):-
 
 miembro(X,[X|_]):-!.
 miembro(X,[_|R]):-miembro(X,R).
-
-mostrar([]):-!.
-mostrar([C|Lista]):-write(C),nl,mostrar(Lista).
-
