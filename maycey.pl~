@@ -53,13 +53,17 @@ chatMayCEy(ListaHistorialChat):-
 
 	append(ListaHistorialChat,ListaCompleta,ListaHistorialChatNew),
 
-	%%%%%%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%
 	pregunta(ListaMsMayCey),
 	writeln(''),
 
         chatMayCEy(ListaHistorialChatNew).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Parametros%%%%%%%%%%%%%%%%%%%%%%%%%%
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
         saludos(ListaSaludos),
         identificar(MsjDeUsuario,ListaSaludos),

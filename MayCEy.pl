@@ -61,6 +61,7 @@ chatMayCEy(ListaHistorialChat):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Parametros%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 %MsjDeUsuario: mensaje que el usuario ingreso
 %MsjDeMCy: Mensaje que enviara MayCey
 %TipoMsjRecibido: El tipo de mensaje recibido
@@ -71,6 +72,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
 	MsjDeMCy='Hola ¿en que lo puedo ayudar?',
         TipoMsjRecibido='saludo'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
         despedidas(ListaDespedidas),
         identificar(MsjDeUsuario,ListaDespedidas),
@@ -78,6 +82,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
 	MsjDeMCy='Hasta luego',
         TipoMsjRecibido='despedida'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%cambioYfuera
         despedidaCambioYFuera(ListaCamYFue),
         identificar(MsjDeUsuario,ListaCamYFue),
@@ -85,6 +92,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%cambioYfuera
 	MsjDeMCy='Cambio Y Fuera',
         TipoMsjRecibido='CambioYFuera'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergencia
         emergencias(ListaEmergencias),
         identificar(MsjDeUsuario,ListaEmergencias),
@@ -92,24 +102,36 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergencia
 	MsjDeMCy='Por favor indique su emergencia, e identifiquese',
         TipoMsjRecibido='emergencia'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %emergenciaRespuesta
 	identificarEmergencias(MsjDeUsuario,Emergencia),
 	%writeln('Emergencia identificada'),
 	MsjDeMCy=Emergencia,
         TipoMsjRecibido='PrimerosAuxEnviados'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %aterrizar
 	identificar(MsjDeUsuario,['aterrizar']),
 	%writeln('Aterrizaje identificado'),
 	MsjDeMCy= 'Por favor identifiquese',
         TipoMsjRecibido='aterrizar'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %despegar
 	identificar(MsjDeUsuario,['despegar']),
 	%writeln('despegue identificado'),
 	MsjDeMCy= 'Por favor identifiquese',
 	TipoMsjRecibido='despegar'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
 	identificar(MsjDeUsuario,['aerolinea','Aerolinea']),
         identificar(MsjDeUsuario,['matricula','Matricula']),
@@ -120,6 +142,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion
 	/*TipoMsjRecibido='Error',
         MsjDeMCy='Error, por favor identifiquese de nuevo'.*/
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones P
 	avionesPequenos(X),
         identificar(MsjDeUsuario,X)->
@@ -127,6 +152,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de avione
         MsjDeMCy=PistaAsignada,
         TipoMsjRecibido='avionPequeño'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones M
 	avionesMedianos(Y),
         identificar(MsjDeUsuario,Y)->
@@ -134,6 +162,9 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de avione
         MsjDeMCy=PistaAsignada,
         TipoMsjRecibido='avionMediano'.
 
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de aviones G
 	avionesGrandes(Z),
         identificar(MsjDeUsuario,Z)->
@@ -143,7 +174,7 @@ tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):- %identificacion de avione
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%Preguntas%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%Resive de parametros una lista la cual devulve el ultimo elemento
 pregunta([]):-!.
 pregunta([C|Lista]):-
 	Lista==[]->write(C);
@@ -151,6 +182,8 @@ pregunta([C|Lista]):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%Pistas%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Resive el avion la pista y direccion de la aeronave, con la cual le
+% asigna una pista de acuerdo a sus caracteristicas
 asignarPista(Avion,Pista,Direccion):-
     Avion=='Avion Pequeno'->Pista='P1 asignada',!;
     Avion=='Avion Grande'->Pista='P3 asignada',!;
@@ -159,18 +192,23 @@ asignarPista(Avion,Pista,Direccion):-
 
 
 %%%%%%%%%%%%%%%%%%%%%Identificacion de Palabras%%%%%%%%%%%%%%%%%%%%%%%
-
+%Se utiliza para identificar cualquier palabra en un texto
 identificar(Text,Lista):-
 	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
 	miembroL(Lista,ListaPalabras).
 
 
 %%%%%%%%%%%%%%%%%%%%Identificacion de Emergencias%%%%%%%%%%%%%%%%%%%%
+% Esta funcio identifica el tipo de emergia segun la lista que se meneja
+% en los hechos declarados
 identificarEmergencias(Text,Emergencia):-
 	findall(B,sub_atom(Text,_,_,_,B),ListaPalabras),
 	emergenciasSolicitud(L),
 	auxEmergencias(L,ListaPalabras,Emergencia).
 
+% Esta es la funcion auxiliar de Emergencias la cual localiza la
+% emergencia como el segundo elemento y devulve el cuerpo de primeros
+% auxilios el cual atendera la emergencia
 auxEmergencias([[X|[Y|_]]|R],ListaPalabras,Emergencia):-
 	miembro(X,ListaPalabras),
 	Emergencia=Y,!;
@@ -178,7 +216,8 @@ auxEmergencias([[X|[Y|_]]|R],ListaPalabras,Emergencia):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% Verifica si existe un elemento en conjunto que pertenezca a ambas
+% listas a la listas de los parametros
 miembroL([X|R],L2):-
 	miembro(X,L2);
 	miembroL(R,L2).
