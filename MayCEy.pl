@@ -1,15 +1,22 @@
+%Lista de saludos para iniciar una conversasion
 saludos(['hola','Hola','Buenas', 'buenas', 'Buenas noches','Buenas tardes']).
 
+%Lista de despedidas para terminar una conversasion
 despedidas(['Adios','Hasta luego','adios','hasta luego','Muchas gracias, adios']).
 
+%Palabras clave para terminar la conversacion
 despedidaCambioYFuera(['Cambio y fuera','cambio y fuera']).
 
+%Lista de emergencias para reportar emergencias especificas
 emergencias(['Mayday, mayday', 'mayday, mayday']).
 
+%Los tipos de aviones que se pueden llegar a utilizar en la conversacion
 avionesPequenos(['cessna', 'beechcraft', 'embraerPhenom']).
 avionesMedianos(['boing717', 'embraer190', 'airBusA220']).
 avionesGrandes(['boing747', 'airBusA340', 'airbusA380']).
 
+% Estas emergencias el primer elemento es la emergencia que se puede
+% reportar y el segundo son los cuerpos de emergencia que llegaran sitio
 emergenciasSolicitud([['perdida de motor', 'Se desplazaran los Bomberos'],
       ['parto en Medio Vuelo', 'Se desplazara al medico'],
       ['paro Cardiaco de Pasajero', 'Se enviara un medico'],
@@ -22,8 +29,14 @@ emergenciasSolicitud([['perdida de motor', 'Se desplazaran los Bomberos'],
 % Toma el msj que el usuario escribe, procesa y responde
 % En la ListaHistorialChat se guarda un cierto historial del
 % tipo de msjs que ha recibido del usuario
-% MsjEsperadoTemp es lo que mayCEy esta esperando recibir en
-% cada respuesta del usuario, para primer mensaje habra un '0'
+% %%%%%%%%%%%%%%%%%%%%%Parametros%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MsjDeUsuario: el mensaje que ingresa el usuario para analizarlo
+% TipoMsjRecibido: Tipo de mensaje recibido
+% MsjDeMCy: Mensaje que respondera el MayCey
+% ListaCompleta: Lista creada para guardar los tipos de
+% mensajes recibidos
+% ListaMsMayCey: Lista completa de todos los mensajes que enviara MayCey
+
 chatMayCEy:-
         chatMayCEy([]).
 chatMayCEy(ListaHistorialChat):-
@@ -40,13 +53,17 @@ chatMayCEy(ListaHistorialChat):-
 
 	append(ListaHistorialChat,ListaCompleta,ListaHistorialChatNew),
 
-	%%%%%%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%% Verifica si la pregunta es cambio y fuera para cortar la conversacion %%%%%%%%%%%%%
 	pregunta(ListaMsMayCey),
 	writeln(''),
 
         chatMayCEy(ListaHistorialChatNew).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Parametros%%%%%%%%%%%%%%%%%%%%%%%%%%
+%MsjDeUsuario: mensaje que el usuario ingreso
+%MsjDeMCy: Mensaje que enviara MayCey
+%TipoMsjRecibido: El tipo de mensaje recibido
 tipodemensaje(MsjDeUsuario,MsjDeMCy,TipoMsjRecibido):-%saludo
         saludos(ListaSaludos),
         identificar(MsjDeUsuario,ListaSaludos),
